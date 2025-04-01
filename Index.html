@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo Fecha</title>
+    <script src="https://apis.google.com/js/api.js"></script>
+    
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('https://collegeboreal.ca/wp-content/uploads/2023/03/pexels-leeloo-thefirst-5386754-scaled.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: rgb(99, 222, 191);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        /* Center text inside inputs and select */
+        input, select {
+            text-align: center;
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Center dropdown options (only works in some browsers) */
+        #center {
+            text-align-last: center;
+        }
+
+        /* Center labels */
+        label {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Button styles */
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Hide result initially */
+        .result {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        footer {
+            font-size: 12px;
+            color: grey;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cálculo Fecha</h2>
+        
+        <label for="startDate">Fecha inicial:</label>
+        <input type="date" id="startDate">
+        
+        <label for="numDays">Días a calcular:</label>
+        <input type="number" id="numDays" min="1">
+        
+        <label for="center">Centro:</label>
+        <select id="center">
+            <option value="TFE">TFE</option>
+            <option value="LPA">LPA</option>
+        </select>
+        
+        <button onclick="computeDates()">Calcular</button>
+        
+        <div class="result" id="resultSection">
+            <p>Fecha inicial: <span id="startDateDisplay">-</span></p>
+            <p>Contando <span id="numDaysDisplay">-</span> <span id="naturalText">días <b>naturales</b></span><br> cubre hasta el <span id="naturalDate">-</span></p>
+            <p>Contando <span id="numDaysDisplay2">-</span> <span id="workText">días <b>laborables</b></span><br> cubre hasta el <span id="workDate">-</span></p>
+        </div>
+
+        <footer>
+            by Marco Cot, 2025 <br><br> Aviso: esta no es una aplicación corporativa <br> Usar únicamente por referencia
+        </footer>
+    </div>
+    
+    <script>
+        function computeDates() {
+            let startDate = document.getElementById('startDate').value;
+            let numDays = document.getElementById('numDays').value;
+            let center = document.getElementById('center').value;
+
+            if (!startDate || !numDays) {
+                alert('Por favor introducir datos');
+                return;
+            }
+
+            google.script.run.withSuccessHandler(displayResult)
+                .calculateDates(startDate, numDays, center);
+        }
+
+        function displayResult(result) {
+            let numDays = parseInt(result.numDays);
+
+            document.getElementById('startDateDisplay').textContent = result.startDate;
+            document.getElementById('numDaysDisplay').textContent = result.numDays;
+            document.getElementById('naturalDate').textContent = result.naturalDate;
+            document.getElementById('numDaysDisplay2').textContent = result.numDays;
+            document.getElementById('workDate').textContent = result.workDate;
+
+            // Use innerHTML instead of textContent to allow bold formatting
+            document.getElementById('naturalText').innerHTML = numDays === 1 ? "día <b>natural</b>" : "días <b>naturales</b>";
+            document.getElementById('workText').innerHTML = numDays === 1 ? "día <b>laboral</b>" : "días <b>laborables</b>";
+
+            // Show the result section
+            document.getElementById('resultSection').style.display = "block";
+        }
+    </script>
+</body>
+</html>
